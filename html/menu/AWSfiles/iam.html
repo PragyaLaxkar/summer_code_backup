@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create IAM User</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Verdana', sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 400px;
+            max-width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .card h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 10px;
+            padding-left: 40px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-container input:focus {
+            border-color: #333;
+        }
+
+        .input-container i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 18px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 25px;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #555;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 16px;
+            text-align: center;
+            display: none;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Create IAM User</h1>
+        <form id="userForm">
+            <div class="input-container">
+                <i class="fa fa-user"></i>
+                <input type="text" id="username" name="username" placeholder="Enter Username" required>
+            </div>
+            <button type="submit" class="btn">Create User</button>
+        </form>
+        <div id="message" class="message"></div>
+    </div>
+
+    <script>
+        document.getElementById("userForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var username = document.getElementById("username").value;
+            createUser(username);
+        }); 
+
+        function createUser(username) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/cgi-bin/iam.py", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    var messageDiv = document.getElementById("message");
+                    if (xhr.status === 200) {
+                        messageDiv.className = 'message success';
+                        messageDiv.innerHTML = xhr.responseText;
+                        messageDiv.style.display = 'block';
+                    } else {
+                        messageDiv.className = 'message error';
+                        messageDiv.innerHTML = "Error creating IAM user.";
+                        messageDiv.style.display = 'block';
+                    }
+                }
+            };
+            xhr.send("username=" + encodeURIComponent(username));
+        }
+    </script>
+</body>
+</html>

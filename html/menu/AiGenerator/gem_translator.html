@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation Service</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background-color: #1c1c1c;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+        }
+        .form-group label {
+            color: #fff;
+        }
+        .btn-primary {
+            background-color: #333;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #555;
+        }
+        .output-box {
+            margin-top: 20px;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Translation Service</h1>
+        <form id="translationForm">
+            <div class="form-group">
+                <label for="target_language">Target Language:</label>
+                <input type="text" class="form-control" id="target_language" name="target_language" required>
+            </div>
+            <div class="form-group">
+                <label for="sentence">Sentence to Translate:</label>
+                <textarea class="form-control" id="sentence" name="sentence" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Translate</button>
+        </form>
+        <div id="output" class="output-box" style="display: none;"></div>
+    </div>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#translationForm').on('submit', function(e) {
+                e.preventDefault(); // Prevent the default form submission
+                
+                const target_language = $('#target_language').val();
+                const sentence = $('#sentence').val();
+                
+                $.ajax({
+                    url: '/cgi-bin/gem_tran.py',
+                    type: 'POST',
+                    data: {
+                        target_language: target_language,
+                        sentence: sentence
+                    },
+                    success: function(response) {
+                        $('#output').text(response).show();
+                    },
+                    error: function() {
+                        $('#output').text('An error occurred while processing your request.').show();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

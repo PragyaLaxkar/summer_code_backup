@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Story Generator</title>
+    <style>
+        :root {
+            --background-light: #ffffff;
+            --background-dark: #121212;
+            --text-light: #000000;
+            --text-dark: #ffffff;
+            --btn-light: #000000;
+            --btn-dark: #ffffff;
+            --btn-text-light: #ffffff;
+            --btn-text-dark: #000000;
+        }
+
+        body.light-theme {
+            background-color: var(--background-light);
+            color: var(--text-light);
+        }
+
+        body.dark-theme {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        .container {
+            background: var(--background-light);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            max-width: 600px;
+            text-align: center;
+            margin: auto;
+            margin-top: 50px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        textarea {
+            width: 90%;
+            height: 100px;
+            padding: 10px;
+            border: 2px solid var(--text-light);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            resize: none;
+            color: var(--text-dark);
+            background-color: var(--background-light);
+        }
+
+        button {
+            background-color: var(--btn-light);
+            color: var(--btn-text-light);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--btn-dark);
+            color: var(--btn-text-dark);
+        }
+
+        #responseContainer {
+            margin-top: 20px;
+            padding: 10px;
+            border-top: 2px solid var(--text-light);
+            text-align: left;
+            font-size: 16px;
+            color: var(--text-dark);
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: var(--background-light);
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <div class="container">
+        <h1 style="color: #000000;">Story Generator</h1>
+        <textarea style="color: #000000;" id="prompt" placeholder="Enter your prompt here..."></textarea>
+        <button id="generateButton">Generate</button>
+        <div style="color: #000000;" id="responseContainer"></div>
+    </div>
+
+    <script>
+        document.getElementById('generateButton').addEventListener('click', function() {
+            var prompt = document.getElementById('prompt').value;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/cgi-bin/gemini_chat.py', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById('responseContainer').innerText = xhr.responseText;
+                }
+            };
+
+            xhr.send('prompt=' + encodeURIComponent(prompt));
+        });
+    </script>
+</body>
+</html>
